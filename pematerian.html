@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Management &amp; Organizational Management - PTIK</title>
+  
+  <!-- Fonts: Playfair Display & Poppins / Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            maroon: '#7B263A',
+            cream: '#F5EBDD',
+            beige: '#E6D3B3',
+            chocolate: '#654321',
+            darkbrown: '#392820',
+            mutedred: '#B65C5C',
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'serif'],
+            sans: ['Poppins', 'Montserrat', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Styling & Interactive Polish */
+    body {
+      background-color: #1a1512;
+      font-family: 'Poppins', 'Montserrat', sans-serif;
+      color: #392820;
+      overflow-x: hidden;
+    }
+
+    .serif-font {
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* Fixed 16:9 Presentation Stage */
+    #presentation-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 70px);
+      padding: 16px;
+    }
+
+    #presentation-stage {
+      width: 1280px;
+      height: 720px;
+      position: relative;
+      background-color: #F5EBDD;
+      border-radius: 12px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      transform-origin: center center;
+      transition: transform 0.2s ease-out;
+    }
+
+    /* Slide visibility transitions */
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1280px;
+      height: 720px;
+      padding: 48px 64px;
+      box-sizing: border-box;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s ease-in-out, transform 0.35s ease-in-out;
+      transform: translateY(10px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: #F5EBDD;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      z-index: 10;
+    }
+
+    /* Live Editing Visual Cue */
+    body.edit-mode-active .editable {
+      outline: 2px dashed #B65C5C !important;
+      outline-offset: 3px;
+      border-radius: 4px;
+      cursor: text;
+      transition: outline 0.15s ease;
+    }
+
+    body.edit-mode-active .editable:hover {
+      background-color: rgba(182, 92, 92, 0.08);
+    }
+
+    /* Custom Scrollbars inside cards */
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background-color: #E6D3B3;
+      border-radius: 4px;
+    }
+
+    /* Modal Grid Preview */
+    #grid-modal {
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    #grid-modal.hidden-modal {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* Toast Notification */
+    #toast-banner {
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    }
+
+    /* Print & PDF Export Layout */
+    @media print {
+      body {
+        background-color: #FFFFFF !important;
+        color: #392820 !important;
+      }
+      #presentation-wrapper {
+        padding: 0 !important;
+        min-height: auto !important;
+        display: block !important;
+      }
+      #presentation-stage {
+        transform: none !important;
+        width: 100% !important;
+        height: auto !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+      }
+      .slide {
+        position: relative !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        width: 1280px !important;
+        height: 720px !important;
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+        margin-bottom: 0 !important;
+        border: 1px solid #E6D3B3 !important;
+      }
+      .no-print, #nav-toolbar, #grid-modal, #toast-banner {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PRESENTATION CANVAS CONTAINER -->
+  <div id="presentation-wrapper">
+    <div id="presentation-stage">
+
+      <!-- SLIDE 1: COVER -->
+      <div class="slide active !bg-maroon !p-14 text-cream" id="slide-1">
+        <div class="flex justify-between items-center border-b border-cream/25 pb-4">
+          <span class="editable text-xs tracking-widest font-semibold uppercase text-beige" contenteditable="false">
+            PROGRAM STUDI PENDIDIKAN TEKNOLOGI INFORMASI &amp; KOMUNIKASI (PTIK)
+          </span>
+          <span class="editable text-xs font-medium text-cream bg-white/10 px-3 py-1 rounded-full" contenteditable="false">
+            <i class="fa-solid fa-graduation-cap mr-1 text-beige"></i> Maba PTIK Orientation
+          </span>
+        </div>
+
+        <div class="flex gap-12 items-center flex-grow my-6">
+          <div class="flex-1">
+            <p class="editable text-sm text-beige font-semibold tracking-wider uppercase mb-3" contenteditable="false">
+              WORKSHOP &amp; SEMINAR PENGEMBANGAN DIRI
+            </p>
+            <h1 class="editable serif-font text-5xl font-extrabold text-cream leading-tight mb-5" contenteditable="false">
+              TIME MANAGEMENT<br>
+              <span class="text-beige">&amp; ORGANIZATIONAL</span><br>
+              MANAGEMENT
+            </h1>
+            <div class="w-16 h-1 bg-mutedred mb-5 rounded-full"></div>
+            <p class="editable text-lg text-cream/90 font-light leading-relaxed max-w-xl" contenteditable="false">
+              "Strategi Mengelola Waktu, Mengembangkan Diri, dan Bertumbuh dalam Organisasi"
+            </p>
+          </div>
+
+          <div class="w-96 h-80 bg-chocolate rounded-2xl overflow-hidden border-2 border-beige shadow-2xl relative">
+            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1000&auto=format&fit=crop" alt="Mahasiswa Belajar" class="w-full h-full object-cover opacity-85">
+            <div class="absolute inset-0 bg-gradient-to-t from-maroon/80 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4 text-xs text-beige bg-maroon/90 backdrop-blur p-3 rounded-lg border border-beige/30">
+              <i class="fa-solid fa-lightbulb text-mutedred mr-1"></i> Bekal Utama Menjadi Mahasiswa PTIK Unggul
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center bg-black/20 px-6 py-3 rounded-xl border border-white/10">
+          <div class="flex items-center space-x-3 text-xs text-beige">
+            <i class="fa-solid fa-university text-mutedred text-base"></i>
+            <span class="editable" contenteditable="false">Fakultas Pendidikan Sosial &amp; Teknologi</span>
+          </div>
+          <div class="flex items-center space-x-2 text-xs text-beige">
+            <i class="fa-solid fa-clock text-mutedred"></i>
+            <span class="editable" contenteditable="false">17 Interactive Slides</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: OPENING -->
+      <div class="slide" id="slide-2">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            01. Orientasi Mahasiswa Baru
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Realita Kehidupan Kampus
+          </span>
+        </div>
+
+        <div class="grid grid-cols-12 gap-8 items-center flex-grow my-4">
+          <div class="col-span-5 flex flex-col justify-center">
+            <div class="bg-maroon text-cream p-7 rounded-2xl shadow-md mb-4 relative">
+              <i class="fa-solid fa-quote-left text-3xl text-beige/40 absolute top-4 left-4">
+              </i>
+              <p class="editable serif-font text-xl font-semibold leading-snug pl-4 relative z-10" contenteditable="false">
+                "Pernah merasa 24 jam sehari tidak cukup untuk menyelesaikan semuanya?"
+              </p>
+            </div>
+            <p class="editable text-sm text-darkbrown leading-relaxed" contenteditable="false">
+              Menjadi mahasiswa PTIK bukan sekadar datang ke kelas dan mengumpulkan tugas. Anda berada di fase transformasi menuju kedewasaan profesional.
+            </p>
+          </div>
+
+          <div class="col-span-7 grid grid-cols-2 gap-4">
+            <div class="bg-white p-5 rounded-xl border-l-4 border-maroon shadow-sm hover:shadow-md transition">
+              <div class="w-10 h-10 bg-cream rounded-lg flex items-center justify-center mb-3">
+                <i class="fa-solid fa-laptop-code text-maroon text-lg"></i>
+              </div>
+              <h3 class="editable font-bold text-maroon text-base mb-1" contenteditable="false">Kuliah &amp; Koding</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Praktikum algoritma, pemrograman web, modul jaringan, &amp; tugas akhir semester.</p>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border-l-4 border-mutedred shadow-sm hover:shadow-md transition">
+              <div class="w-10 h-10 bg-cream rounded-lg flex items-center justify-center mb-3">
+                <i class="fa-solid fa-users text-mutedred text-lg"></i>
+              </div>
+              <h3 class="editable font-bold text-maroon text-base mb-1" contenteditable="false">Organisasi Kampus</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">HIMATIK, BEM, UKM, kepanitiaan event, dan rapat rutin organisasi.</p>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border-l-4 border-chocolate shadow-sm hover:shadow-md transition">
+              <div class="w-10 h-10 bg-cream rounded-lg flex items-center justify-center mb-3">
+                <i class="fa-solid fa-compass-drafting text-chocolate text-lg"></i>
+              </div>
+              <h3 class="editable font-bold text-maroon text-base mb-1" contenteditable="false">Pengembangan Diri</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Lomba IT, bootcamp skill, networking alumni, dan portofolio pribadi.</p>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border-l-4 border-maroon shadow-sm hover:shadow-md transition">
+              <div class="w-10 h-10 bg-cream rounded-lg flex items-center justify-center mb-3">
+                <i class="fa-solid fa-heart-pulse text-maroon text-lg"></i>
+              </div>
+              <h3 class="editable font-bold text-maroon text-base mb-1" contenteditable="false">Kehidupan Pribadi</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Keluarga, kawan dekat, kesehatan fisik, waktu istirahat, &amp; hobi pribadi.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Kunci Sukses: Mengimbangi Seluruh Pilar Tanpa Mengorbankan Salah Satunya</span>
+          <span>Slide 2 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 3: MENGENAL MANAJEMEN WAKTU -->
+      <div class="slide" id="slide-3">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            02. Konsep Dasar Manajemen Waktu
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Definisi &amp; Fondasi
+          </span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-6 flex-grow my-6 items-stretch">
+          <div class="bg-white p-6 rounded-2xl border border-beige shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 bg-cream rounded-xl flex items-center justify-center mb-4">
+                <i class="fa-solid fa-hourglass-half text-maroon text-xl"></i>
+              </div>
+              <h3 class="editable serif-font text-xl font-bold text-maroon mb-3" contenteditable="false">Apa Itu Time Management?</h3>
+              <p class="editable text-sm text-darkbrown leading-relaxed" contenteditable="false">
+                Proses merencanakan, mengalokasikan, dan mengendalikan alokasi waktu untuk aktivitas spesifik demi meningkatkan produktivitas, efisiensi, dan keseimbangan hidup.
+              </p>
+            </div>
+            <div class="bg-cream/60 p-3 rounded-lg text-xs text-chocolate font-medium mt-4">
+              <i class="fa-solid fa-check-circle mr-1 text-maroon"></i> Pengendalian, bukan sekadar jadwal.
+            </div>
+          </div>
+
+          <div class="bg-beige/60 p-6 rounded-2xl border border-beige flex flex-col justify-between">
+            <div>
+              <h3 class="editable serif-font text-xl font-bold text-maroon mb-4" contenteditable="false">Efektif vs. Efisien</h3>
+              
+              <div class="mb-4 bg-white p-3.5 rounded-xl border-l-4 border-maroon">
+                <h4 class="editable font-bold text-maroon text-sm" contenteditable="false">Efektif (Doing the Right Things)</h4>
+                <p class="editable text-xs text-darkbrown mt-1" contenteditable="false">Mengerjakan tugas yang memiliki dampak terbesar pada target akademik PTIK Anda.</p>
+              </div>
+
+              <div class="bg-white p-3.5 rounded-xl border-l-4 border-chocolate">
+                <h4 class="editable font-bold text-chocolate text-sm" contenteditable="false">Efisien (Doing Things Right)</h4>
+                <p class="editable text-xs text-darkbrown mt-1" contenteditable="false">Menyelesaikan tugas dengan cara tercepat dan pemanfaatan sumber daya paling optimal.</p>
+              </div>
+            </div>
+            <p class="editable text-xs text-chocolate font-medium italic mt-2" contenteditable="false">*Target utama: Efektif terlebih dahulu, lalu jadikan efisien!</p>
+          </div>
+
+          <div class="bg-maroon text-cream p-6 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-4">
+                <i class="fa-solid fa-bullseye text-beige text-xl"></i>
+              </div>
+              <h3 class="editable serif-font text-xl font-bold text-cream mb-3" contenteditable="false">Relevansi Maba PTIK</h3>
+              <p class="editable text-sm text-cream/90 leading-relaxed" contenteditable="false">
+                Dunia PTIK sarat dengan deadline praktikum cepat, problem solving koding, serta aktivitas HIMA. Pengelolaan waktu yang baik mencegah fenomena "SKS" (Sistem Kebut Semalam).
+              </p>
+            </div>
+            <div class="bg-white/10 p-3 rounded-lg text-xs text-beige">
+              <i class="fa-solid fa-shield-halved mr-1"></i> Mencegah stres berlebih &amp; burnout.
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Waktu Adalah Sumber Daya Terbatas Yang Tidak Dapat Diputar Kembali</span>
+          <span>Slide 3 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 4: MENGAPA PENTING -->
+      <div class="slide" id="slide-4">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            03. Mengapa Manajemen Waktu Sangat Penting?
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            5 Manfaat Utama
+          </span>
+        </div>
+
+        <div class="grid grid-cols-5 gap-4 flex-grow my-6 items-center">
+          <div class="bg-white p-5 rounded-2xl border-t-4 border-maroon shadow-sm h-full flex flex-col justify-between">
+            <div>
+              <div class="text-maroon text-2xl mb-3"><i class="fa-solid fa-clock-check"></i></div>
+              <h3 class="editable font-bold text-maroon text-sm mb-2" contenteditable="false">1. Tugas Tepat Waktu</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Menghindari pengerjaan terburu-buru dan meminimalisir kesalahan koding atau laporan.</p>
+            </div>
+            <span class="text-[10px] bg-cream text-chocolate font-semibold px-2 py-1 rounded mt-3">Kualitas Terbaik</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border-t-4 border-mutedred shadow-sm h-full flex flex-col justify-between">
+            <div>
+              <div class="text-mutedred text-2xl mb-3"><i class="fa-solid fa-list-ol"></i></div>
+              <h3 class="editable font-bold text-maroon text-sm mb-2" contenteditable="false">2. Skala Prioritas Jelas</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Tahu mana yang harus segera diselesaikan dan mana yang bisa dijadwalkan ulang.</p>
+            </div>
+            <span class="text-[10px] bg-cream text-chocolate font-semibold px-2 py-1 rounded mt-3">Fokus Terarah</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border-t-4 border-chocolate shadow-sm h-full flex flex-col justify-between">
+            <div>
+              <div class="text-chocolate text-2xl mb-3"><i class="fa-solid fa-ban"></i></div>
+              <h3 class="editable font-bold text-maroon text-sm mb-2" contenteditable="false">3. Bebas Prokrastinasi</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Mengikis kebiasaan menunda-nunda pekerjaan melalui pembagian target kecil.</p>
+            </div>
+            <span class="text-[10px] bg-cream text-chocolate font-semibold px-2 py-1 rounded mt-3">Bebas Stres</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border-t-4 border-maroon shadow-sm h-full flex flex-col justify-between">
+            <div>
+              <div class="text-maroon text-2xl mb-3"><i class="fa-solid fa-scale-balanced"></i></div>
+              <h3 class="editable font-bold text-maroon text-sm mb-2" contenteditable="false">4. Life Balance</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Menjaga keseimbangan antara IPK, keaktifan berorganisasi, dan kesehatan fisik.</p>
+            </div>
+            <span class="text-[10px] bg-cream text-chocolate font-semibold px-2 py-1 rounded mt-3">Hidup Seimbang</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border-t-4 border-mutedred shadow-sm h-full flex flex-col justify-between">
+            <div>
+              <div class="text-mutedred text-2xl mb-3"><i class="fa-solid fa-award"></i></div>
+              <h3 class="editable font-bold text-maroon text-sm mb-2" contenteditable="false">5. Kedisiplinan Diri</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Membentuk karakter profesional yang dipercaya dalam tim dan kepanitiaan.</p>
+            </div>
+            <span class="text-[10px] bg-cream text-chocolate font-semibold px-2 py-1 rounded mt-3">Soft Skill Utama</span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Kelola Waktu Anda, Atau Waktu Yang Akan Mengendalikan Anda</span>
+          <span>Slide 4 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 5: TEKNIK 1 TO DO LIST & TIME BLOCKING -->
+      <div class="slide" id="slide-5">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            04. Teknik 1: To-Do List &amp; Time Blocking
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Metode Praktis #1
+          </span>
+        </div>
+
+        <div class="grid grid-cols-12 gap-8 items-center flex-grow my-4">
+          <div class="col-span-6 flex flex-col justify-center space-y-4">
+            <div class="bg-white p-5 rounded-xl border-l-4 border-maroon shadow-sm">
+              <h3 class="editable font-bold text-maroon text-base mb-1" contenteditable="false">
+                <i class="fa-solid fa-check-double mr-2"></i>1. To-Do List (Daftar Tugas)
+              </h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+                Mencatat seluruh daftar pekerjaan harian. Bermanfaat agar tidak ada tugas koding atau revisi makalah yang terlupakan. Sederhana, namun sangat ampuh.
+              </p>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border-l-4 border-chocolate shadow-sm">
+              <h3 class="editable font-bold text-maroon text-base mb-1" contenteditable="false">
+                <i class="fa-solid fa-calendar-week mr-2"></i>2. Time Blocking (Pengalokasian Waktu)
+              </h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+                Membagi hari menjadi blok-blok waktu khusus untuk satu jenis pekerjaan saja. Mencegah multitasking yang menurunkan fokus dan kualitas koding.
+              </p>
+            </div>
+
+            <div class="bg-cream/80 p-4 rounded-xl border border-beige text-xs text-chocolate">
+              <i class="fa-solid fa-lightbulb text-maroon mr-1"></i> <b>Tips PTIK:</b> Buat 1 blok khusus "Deep Work" (90 menit) tanpa HP untuk mengerjakan modul koding sulit.
+            </div>
+          </div>
+
+          <div class="col-span-6 bg-white p-6 rounded-2xl border border-beige shadow-md">
+            <div class="flex justify-between items-center border-b border-beige pb-3 mb-4">
+              <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">
+                <i class="fa-solid fa-calendar-day mr-2 text-mutedred"></i>Contoh Jadwal Time Blocking Mahasiswa PTIK
+              </h3>
+              <span class="text-[10px] bg-maroon text-cream px-2 py-0.5 rounded">Senin Skenario</span>
+            </div>
+
+            <div class="space-y-2.5 text-xs">
+              <div class="flex justify-between p-2.5 bg-cream/40 rounded-lg border border-beige/60">
+                <span class="font-bold text-maroon w-28">07.30 - 11.00</span>
+                <span class="editable text-darkbrown font-medium flex-1" contenteditable="false">Kuliah Algoritma &amp; Pemrograman (Lab 2)</span>
+              </div>
+              <div class="flex justify-between p-2.5 bg-cream/40 rounded-lg border border-beige/60">
+                <span class="font-bold text-maroon w-28">11.00 - 13.00</span>
+                <span class="editable text-darkbrown font-medium flex-1" contenteditable="false">Istirahat, Makan Siang, &amp; ISOMA</span>
+              </div>
+              <div class="flex justify-between p-2.5 bg-maroon text-cream rounded-lg shadow-sm">
+                <span class="font-bold text-beige w-28">13.00 - 15.00</span>
+                <span class="editable font-semibold flex-1" contenteditable="false">FOCUS BLOCK: Pengerjaan Modul C++ (Deep Work)</span>
+              </div>
+              <div class="flex justify-between p-2.5 bg-cream/40 rounded-lg border border-beige/60">
+                <span class="font-bold text-maroon w-28">15.30 - 17.30</span>
+                <span class="editable text-darkbrown font-medium flex-1" contenteditable="false">Rapat Panitia Seminar PTIK (Ruang HIMA)</span>
+              </div>
+              <div class="flex justify-between p-2.5 bg-cream/40 rounded-lg border border-beige/60">
+                <span class="font-bold text-maroon w-28">19.30 - 21.00</span>
+                <span class="editable text-darkbrown font-medium flex-1" contenteditable="false">Review Materi &amp; Evaluasi To-Do List Harian</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Rencanakan Hari Anda Sebelum Hari Itu Dimulai</span>
+          <span>Slide 5 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 6: TEKNIK 2 POMODORO & EISENHOWER -->
+      <div class="slide" id="slide-6">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            05. Teknik 2: Pomodoro &amp; Matriks Eisenhower
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Metode Praktis #2
+          </span>
+        </div>
+
+        <div class="grid grid-cols-12 gap-6 items-center flex-grow my-4">
+          <!-- Eisenhower Matrix -->
+          <div class="col-span-8 bg-white p-5 rounded-2xl border border-beige shadow-sm">
+            <div class="flex justify-between items-center mb-3 border-b border-beige pb-2">
+              <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">
+                <i class="fa-solid fa-table-cells-large mr-2 text-maroon"></i>Matriks Eisenhower (4 Kuadran Prioritas)
+              </h3>
+              <span class="text-[10px] text-chocolate font-semibold">Tentukan Prioritas Anda</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 text-xs">
+              <div class="bg-maroon text-cream p-3.5 rounded-xl">
+                <span class="text-[10px] uppercase font-bold text-beige bg-black/20 px-2 py-0.5 rounded">Kuadran I: Do First</span>
+                <h4 class="editable font-bold text-sm my-1 text-cream" contenteditable="false">Penting &amp; Mendesak</h4>
+                <p class="editable text-[11px] text-cream/90" contenteditable="false">• Tugas koding deadline besok pagi<br>• Laporan praktikum jaringan crash<br>• Persiapan presentasi jam berikutnya</p>
+              </div>
+
+              <div class="bg-beige text-darkbrown p-3.5 rounded-xl">
+                <span class="text-[10px] uppercase font-bold text-maroon bg-white/60 px-2 py-0.5 rounded">Kuadran II: Schedule</span>
+                <h4 class="editable font-bold text-sm my-1 text-maroon" contenteditable="false">Penting &amp; Tidak Mendesak</h4>
+                <p class="editable text-[11px] text-darkbrown" contenteditable="false">• Belajar persiapan UTS dari jauh hari<br>• Pengembangan portofolio web<br>• Olahraga &amp; menjaga kesehatan</p>
+              </div>
+
+              <div class="bg-cream/70 text-darkbrown p-3.5 rounded-xl border border-beige">
+                <span class="text-[10px] uppercase font-bold text-chocolate bg-beige px-2 py-0.5 rounded">Kuadran III: Delegate</span>
+                <h4 class="editable font-bold text-sm my-1 text-chocolate" contenteditable="false">Mendesak &amp; Tidak Penting</h4>
+                <p class="editable text-[11px] text-darkbrown" contenteditable="false">• Panggilan rapat dadakan non-vital<br>• Balas chat grup yang tidak prioritas<br>• Permintaan tolong yang bisa diwakilkan</p>
+              </div>
+
+              <div class="bg-gray-100 text-gray-700 p-3.5 rounded-xl border border-gray-200">
+                <span class="text-[10px] uppercase font-bold text-gray-600 bg-gray-200 px-2 py-0.5 rounded">Kuadran IV: Eliminate</span>
+                <h4 class="editable font-bold text-sm my-1 text-gray-800" contenteditable="false">Tidak Penting &amp; Tidak Mendesak</h4>
+                <p class="editable text-[11px] text-gray-600" contenteditable="false">• Doomscrolling TikTok / Instagram<br>• Main game berjam-jam tanpa batas<br>• Obrolan gosip di warkop sampai larut</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pomodoro Box -->
+          <div class="col-span-4 bg-maroon text-cream p-6 rounded-2xl h-full flex flex-col justify-between shadow-md">
+            <div>
+              <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-3">
+                <i class="fa-solid fa-stopwatch text-beige text-2xl"></i>
+              </div>
+              <h3 class="editable serif-font text-xl font-bold text-cream mb-2" contenteditable="false">Teknik Pomodoro</h3>
+              <p class="editable text-xs text-cream/90 leading-relaxed mb-4" contenteditable="false">
+                Metode manajemen waktu untuk menjaga ketajaman fokus otak tanpa kelelahan.
+              </p>
+
+              <div class="space-y-2 text-xs">
+                <div class="bg-white/10 p-2.5 rounded-lg flex items-center space-x-2">
+                  <span class="font-bold text-beige text-sm">25m</span>
+                  <span class="editable" contenteditable="false">Fokus Penuh Koding (No Distraction)</span>
+                </div>
+                <div class="bg-white/10 p-2.5 rounded-lg flex items-center space-x-2">
+                  <span class="font-bold text-mutedred text-sm">5m</span>
+                  <span class="editable" contenteditable="false">Istirahat Sejenak (Stretching/Minum)</span>
+                </div>
+                <div class="bg-white/10 p-2.5 rounded-lg flex items-center space-x-2">
+                  <span class="font-bold text-beige text-sm">4x</span>
+                  <span class="editable" contenteditable="false">Ulangi 4 Sesi, Lalu Istirahat Panjang (20m)</span>
+                </div>
+              </div>
+            </div>
+
+            <p class="editable text-[11px] text-beige italic mt-4" contenteditable="false">Sangat efektif membakar kebiasaan menunda koding!</p>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Investasikan Waktu Anda Lebih Banyak Pada Kuadran II</span>
+          <span>Slide 6 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 7: HAMBATAN DAN SOLUSI -->
+      <div class="slide" id="slide-7">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            06. Hambatan &amp; Solusi Manajemen Waktu
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Problem &amp; Resolution
+          </span>
+        </div>
+
+        <div class="space-y-3 flex-grow my-4 flex flex-col justify-center">
+          <div class="grid grid-cols-12 gap-3 items-center bg-white p-3.5 rounded-xl border border-beige shadow-sm">
+            <div class="col-span-5 font-bold text-maroon text-xs flex items-center">
+              <span class="w-6 h-6 rounded-full bg-maroon text-cream flex items-center justify-center text-xs mr-2">1</span>
+              <span class="editable" contenteditable="false">Prokrastinasi (Menunda-nunda)</span>
+            </div>
+            <div class="col-span-7 text-xs text-darkbrown bg-cream/50 p-2 rounded-lg border border-beige/50">
+              <span class="font-semibold text-chocolate">Solusi:</span> <span class="editable" contenteditable="false">Gunakan "Aturan 5 Menit" — Paksa diri mulai koding 5 menit saja. Keraguan biasanya hilang setelah mulai.</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-3 items-center bg-white p-3.5 rounded-xl border border-beige shadow-sm">
+            <div class="col-span-5 font-bold text-maroon text-xs flex items-center">
+              <span class="w-6 h-6 rounded-full bg-maroon text-cream flex items-center justify-center text-xs mr-2">2</span>
+              <span class="editable" contenteditable="false">Distraksi Media Sosial &amp; Game</span>
+            </div>
+            <div class="col-span-7 text-xs text-darkbrown bg-cream/50 p-2 rounded-lg border border-beige/50">
+              <span class="font-semibold text-chocolate">Solusi:</span> <span class="editable" contenteditable="false">Matikan notifikasi HP, aktifkan mode "Do Not Disturb", atau jauhkan HP saat jam belajar.</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-3 items-center bg-white p-3.5 rounded-xl border border-beige shadow-sm">
+            <div class="col-span-5 font-bold text-maroon text-xs flex items-center">
+              <span class="w-6 h-6 rounded-full bg-maroon text-cream flex items-center justify-center text-xs mr-2">3</span>
+              <span class="editable" contenteditable="false">Jadwal Bertabrakan / Bentrok</span>
+            </div>
+            <div class="col-span-7 text-xs text-darkbrown bg-cream/50 p-2 rounded-lg border border-beige/50">
+              <span class="font-semibold text-chocolate">Solusi:</span> <span class="editable" contenteditable="false">Gunakan Google Calendar terintegrasi. Komunikasikan bentrok jadwal minimal 2 hari sebelumnya.</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-3 items-center bg-white p-3.5 rounded-xl border border-beige shadow-sm">
+            <div class="col-span-5 font-bold text-maroon text-xs flex items-center">
+              <span class="w-6 h-6 rounded-full bg-maroon text-cream flex items-center justify-center text-xs mr-2">4</span>
+              <span class="editable" contenteditable="false">Overcommitment (Terlalu Banyak Ambil Tugas)</span>
+            </div>
+            <div class="col-span-7 text-xs text-darkbrown bg-cream/50 p-2 rounded-lg border border-beige/50">
+              <span class="font-semibold text-chocolate">Solusi:</span> <span class="editable" contenteditable="false">Kenali batas kemampuan. Belajar menolak halus tawaran panitia tambahan jika tugas akademik menumpuk.</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-3 items-center bg-white p-3.5 rounded-xl border border-beige shadow-sm">
+            <div class="col-span-5 font-bold text-maroon text-xs flex items-center">
+              <span class="w-6 h-6 rounded-full bg-maroon text-cream flex items-center justify-center text-xs mr-2">5</span>
+              <span class="editable" contenteditable="false">Target Harian Tidak Realistis</span>
+            </div>
+            <div class="col-span-7 text-xs text-darkbrown bg-cream/50 p-2 rounded-lg border border-beige/50">
+              <span class="font-semibold text-chocolate">Solusi:</span> <span class="editable" contenteditable="false">Pecah tugas besar menjadi bagian-bagian kecil (chunking) dan selesaikan satu per satu.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Tantangan Selalu Ada, Kuncinya Adalah Memiliki Solusi Terencana</span>
+          <span>Slide 7 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 8: MENGENAL MANAJEMEN ORGANISASI -->
+      <div class="slide" id="slide-8">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            07. Pengenalan Manajemen Organisasi
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Sinergi &amp; Tim
+          </span>
+        </div>
+
+        <div class="grid grid-cols-12 gap-8 items-center flex-grow my-4">
+          <div class="col-span-6 space-y-4">
+            <div class="bg-maroon text-cream p-6 rounded-2xl shadow-md">
+              <h3 class="editable serif-font text-2xl font-bold mb-2 text-beige" contenteditable="false">
+                Apa Itu Organizational Management?
+              </h3>
+              <p class="editable text-xs text-cream/90 leading-relaxed" contenteditable="false">
+                Proses mengoordinasikan sumber daya manusia, materi, dan strategi untuk mencapai tujuan bersama dalam wadah organisasi secara efektif dan efisien.
+              </p>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-beige shadow-sm space-y-3">
+              <h4 class="editable font-bold text-maroon text-sm" contenteditable="false">
+                <i class="fa-solid fa-diagram-project mr-2 text-maroon"></i>Peran Utama Dalam Kampus
+              </h4>
+              <ul class="space-y-2 text-xs text-darkbrown">
+                <li class="flex items-start">
+                  <i class="fa-solid fa-circle-check text-mutedred mr-2 mt-0.5"></i>
+                  <span class="editable" contenteditable="false">Menyelaraskan berbagai pemikiran mahasiswa PTIK yang beragam.</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fa-solid fa-circle-check text-mutedred mr-2 mt-0.5"></i>
+                  <span class="editable" contenteditable="false">Mengelola potensi anggota untuk menciptakan kegiatan berdampak luas.</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fa-solid fa-circle-check text-mutedred mr-2 mt-0.5"></i>
+                  <span class="editable" contenteditable="false">Menciptakan sistem kerja terstruktur dalam proker HIMATIK / BEM.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-span-6 bg-white p-6 rounded-2xl border border-beige shadow-md flex flex-col justify-center items-center text-center">
+            <div class="w-16 h-16 bg-cream rounded-full flex items-center justify-center mb-4 text-maroon text-2xl">
+              <i class="fa-solid fa-people-roof"></i>
+            </div>
+            <h3 class="editable font-bold text-maroon text-lg mb-2" contenteditable="false">Individu vs. Organisasi</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed mb-4 max-w-md" contenteditable="false">
+              "Sendiri kita bisa melakukan sedikit hal; bersama-sama kita bisa meraih hal-hal besar yang luar biasa."
+            </p>
+            <div class="grid grid-cols-2 gap-3 w-full text-left">
+              <div class="bg-cream/60 p-3 rounded-xl border border-beige/60">
+                <span class="font-bold text-xs text-maroon block mb-1">Kerja Sendiri</span>
+                <span class="editable text-[11px] text-darkbrown" contenteditable="false">Jangkauan terbatas, beban dipikul sendirian.</span>
+              </div>
+              <div class="bg-beige p-3 rounded-xl border border-beige">
+                <span class="font-bold text-xs text-maroon block mb-1">Manajemen Tim</span>
+                <span class="editable text-[11px] text-darkbrown" contenteditable="false">Saling melengkapi skill, jangkauan luas &amp; sistemis.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Organisasi Adalah Wadah Terbaik Mengasah Kepemimpinan Mahasiswa</span>
+          <span>Slide 8 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 9: MENGAPA BERORGANISASI -->
+      <div class="slide" id="slide-9">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            08. Mengapa Mahasiswa Perlu Berorganisasi?
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Soft Skills &amp; Network
+          </span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 flex-grow my-4 items-center">
+          <div class="bg-white p-4.5 rounded-xl border-t-4 border-maroon shadow-sm space-y-2">
+            <div class="text-maroon text-xl"><i class="fa-solid fa-comments"></i></div>
+            <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">1. Melatih Komunikasi</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Melatih kemampuan public speaking, negosiasi sponsor, dan menyampaikan pendapat secara terstruktur.</p>
+          </div>
+
+          <div class="bg-white p-4.5 rounded-xl border-t-4 border-mutedred shadow-sm space-y-2">
+            <div class="text-mutedred text-xl"><i class="fa-solid fa-user-tie"></i></div>
+            <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">2. Leadership (Kepemimpinan)</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Mengambil keputusan tepat, mengarahkan tim, dan bertanggung jawab atas hasil program kerja.</p>
+          </div>
+
+          <div class="bg-white p-4.5 rounded-xl border-t-4 border-chocolate shadow-sm space-y-2">
+            <div class="text-chocolate text-xl"><i class="fa-solid fa-handshake-angle"></i></div>
+            <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">3. Kerja Sama Tim</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Menghargai keberagaman pendapat dan meredam ego demi kesuksesan bersama.</p>
+          </div>
+
+          <div class="bg-white p-4.5 rounded-xl border-t-4 border-maroon shadow-sm space-y-2">
+            <div class="text-maroon text-xl"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">4. Melatih Tanggung Jawab</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Menyelesaikan amanah divisi hingga laporan pertanggungjawaban (LPJ) selesai.</p>
+          </div>
+
+          <div class="bg-white p-4.5 rounded-xl border-t-4 border-mutedred shadow-sm space-y-2">
+            <div class="text-mutedred text-xl"><i class="fa-solid fa-puzzle-piece"></i></div>
+            <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">5. Problem Solving</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Melatih ketenangan dalam mencari solusi saat terjadi krisis teknis di lapangan.</p>
+          </div>
+
+          <div class="bg-white p-4.5 rounded-xl border-t-4 border-chocolate shadow-sm space-y-2">
+            <div class="text-chocolate text-xl"><i class="fa-solid fa-network-wired"></i></div>
+            <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">6. Relasi &amp; Networking</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Membangun jaringan senior, alumni PTIK, dosen, dan mitra eksternal industri IT.</p>
+          </div>
+        </div>
+
+        <div class="bg-beige/70 p-3 rounded-xl border border-beige flex justify-between items-center text-xs">
+          <span class="font-bold text-maroon"><i class="fa-solid fa-sitemap mr-1"></i> Contoh Wadah PTIK:</span>
+          <span class="editable text-darkbrown" contenteditable="false">HIMATIK (Himpunan Mahasiswa PTIK) • BEM FPST • UKM Seni &amp; Olahraga • Kepanitiaan Event</span>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Soft Skill Dibentuk Dari Pengalaman Nyata, Bukan Sekadar Teori</span>
+          <span>Slide 9 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 10: UNSUR PENTING ORGANISASI -->
+      <div class="slide" id="slide-10">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            09. 5 Unsur Penting Dalam Organisasi
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Anatomi Organisasi
+          </span>
+        </div>
+
+        <div class="grid grid-cols-5 gap-3 flex-grow my-6 items-center">
+          <div class="bg-white p-5 rounded-2xl border border-beige shadow-sm text-center flex flex-col items-center justify-between h-full">
+            <div class="w-12 h-12 bg-maroon text-cream rounded-full flex items-center justify-center font-bold text-lg mb-3">1</div>
+            <div>
+              <h3 class="editable font-bold text-maroon text-sm mb-2" contenteditable="false">Tujuan Bersama</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Visi dan target jelas yang menjadi kompas seluruh divisi.</p>
+            </div>
+            <span class="text-[10px] bg-cream text-chocolate font-semibold px-2 py-1 rounded mt-3">Kompas Organisasi</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-beige shadow-sm text-center flex flex-col items-center justify-between h-full">
+            <div class="w-12 h-12 bg-maroon text-cream rounded-full flex items-center justify-center font-bold text-lg mb-3">2</div>
+            <div>
+              <h3 class="editable font-bold text-maroon text-sm mb-2" contenteditable="false">Struktur Organisasi</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Hirarki kepengurusan yang menegaskan alur komando.</p>
+            </div>
+            <span class="text-[10px] bg-cream text-chocolate font-semibold px-2 py-1 rounded mt-3">Alur Komando</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-beige shadow-sm text-center flex flex-col items-center justify-between h-full">
+            <div class="w-12 h-12 bg-maroon text-cream rounded-full flex items-center justify-center font-bold text-lg mb-3">3</div>
+            <div>
+              <h3 class="editable font-bold text-maroon text-sm mb-2" contenteditable="false">Pembagian Tugas</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Job description rinci agar tidak terjadi tumpang tindih.</p>
+            </div>
+            <span class="text-[10px] bg-cream text-chocolate font-semibold px-2 py-1 rounded mt-3">Job Description</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-beige shadow-sm text-center flex flex-col items-center justify-between h-full">
+            <div class="w-12 h-12 bg-maroon text-cream rounded-full flex items-center justify-center font-bold text-lg mb-3">4</div>
+            <div>
+              <h3 class="editable font-bold text-maroon text-sm mb-2" contenteditable="false">Komunikasi</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Koordinasi berkala untuk update progress dan kendala.</p>
+            </div>
+            <span class="text-[10px] bg-cream text-chocolate font-semibold px-2 py-1 rounded mt-3">Sirkulasi Informasi</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-beige shadow-sm text-center flex flex-col items-center justify-between h-full">
+            <div class="w-12 h-12 bg-maroon text-cream rounded-full flex items-center justify-center font-bold text-lg mb-3">5</div>
+            <div>
+              <h3 class="editable font-bold text-maroon text-sm mb-2" contenteditable="false">Komitmen Tim</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">Rasa memiliki (sense of belonging) dan kesetiaan pada tugas.</p>
+            </div>
+            <span class="text-[10px] bg-cream text-chocolate font-semibold px-2 py-1 rounded mt-3">Pondasi Sikap</span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Kelima Unsur Ini Saling Melengkapi Dan Tidak Dapat Dipisahkan</span>
+          <span>Slide 10 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 11: FUNGSI MANAJEMEN POAC -->
+      <div class="slide" id="slide-11">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            10. Fungsi Manajemen Organisasi: POAC Framework
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Siklus Eksekusi
+          </span>
+        </div>
+
+        <!-- Formula Banner -->
+        <div class="bg-maroon text-cream p-3 rounded-xl text-center shadow-sm my-3">
+          <p class="editable serif-font text-base font-bold text-beige" contenteditable="false">
+            Rumus Manajemen Organisasi: Rencanakan (P) &rarr; Atur (O) &rarr; Jalankan (A) &rarr; Evaluasi (C)
+          </p>
+        </div>
+
+        <div class="grid grid-cols-4 gap-4 flex-grow my-2 items-stretch">
+          <div class="bg-white p-5 rounded-2xl border-l-4 border-maroon shadow-sm flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-bold text-maroon tracking-wider uppercase">Langkah 1</span>
+              <h3 class="editable font-bold text-lg text-maroon my-1" contenteditable="false">P - Planning</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed mt-2" contenteditable="false">
+                Menentukan tujuan, konsep acara, indikator sukses, anggaran biaya, dan timeline pengerjaan.
+              </p>
+            </div>
+            <div class="bg-cream p-2.5 rounded-lg text-[11px] text-chocolate mt-3">
+              <b>Studi Kasus PTIK:</b> Menyusun proposal Seminar Nasional Teknologi Informasi.
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border-l-4 border-mutedred shadow-sm flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-bold text-mutedred tracking-wider uppercase">Langkah 2</span>
+              <h3 class="editable font-bold text-lg text-maroon my-1" contenteditable="false">O - Organizing</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed mt-2" contenteditable="false">
+                Membentuk panitia, membagi divisi (Acara, Humas, Pubdekdoc, Perlengkapan), &amp; alokasi tugas.
+              </p>
+            </div>
+            <div class="bg-cream p-2.5 rounded-lg text-[11px] text-chocolate mt-3">
+              <b>Studi Kasus PTIK:</b> Penunjukan ketua panitia &amp; koordinator divisi acara.
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border-l-4 border-chocolate shadow-sm flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-bold text-chocolate tracking-wider uppercase">Langkah 3</span>
+              <h3 class="editable font-bold text-lg text-maroon my-1" contenteditable="false">A - Actuating</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed mt-2" contenteditable="false">
+                Mengeksekusi rencana di lapangan, mengarahkan tim, dan mengendalikan dinamika hari H.
+              </p>
+            </div>
+            <div class="bg-cream p-2.5 rounded-lg text-[11px] text-chocolate mt-3">
+              <b>Studi Kasus PTIK:</b> Pelaksanaan acara seminar berjalan sesuai rundown.
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border-l-4 border-maroon shadow-sm flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-bold text-maroon tracking-wider uppercase">Langkah 4</span>
+              <h3 class="editable font-bold text-lg text-maroon my-1" contenteditable="false">C - Controlling</h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed mt-2" contenteditable="false">
+                Mengevaluasi hasil, mencatat kekurangan teknis, dan menyusun Laporan Pertanggungjawaban (LPJ).
+              </p>
+            </div>
+            <div class="bg-cream p-2.5 rounded-lg text-[11px] text-chocolate mt-3">
+              <b>Studi Kasus PTIK:</b> Rapat evaluasi pasca acara &amp; pembubaran panitia.
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Tanpa Controlling, Kesalahan Yang Sama Akan Terulang Di Event Berikutnya</span>
+          <span>Slide 11 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 12: LEADERSHIP TEAMWORK CONFLICT MANAGEMENT -->
+      <div class="slide" id="slide-12">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            11. Leadership, Teamwork &amp; Manajemen Konflik
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Dinamika Kelompok
+          </span>
+        </div>
+
+        <div class="grid grid-cols-12 gap-6 items-center flex-grow my-4">
+          <div class="col-span-6 space-y-3">
+            <div class="bg-white p-4 rounded-xl border-l-4 border-maroon shadow-sm">
+              <h3 class="editable font-bold text-maroon text-sm mb-1" contenteditable="false">
+                <i class="fa-solid fa-comments mr-2"></i>Komunikasi Terbuka &amp; Empatis
+              </h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+                Sampaikan masalah atau keterlambatan tugas sebelum deadline tiba. Transparansi membangun kepercayaan tim.
+              </p>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border-l-4 border-mutedred shadow-sm">
+              <h3 class="editable font-bold text-maroon text-sm mb-1" contenteditable="false">
+                <i class="fa-solid fa-scale-balanced mr-2"></i>Menghargai Perbedaan Pendapat
+              </h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+                Perbedaan ide adalah aset inovasi. Dengarkan argumen rekan tim secara utuh sebelum memberikan tanggapan.
+              </p>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border-l-4 border-chocolate shadow-sm">
+              <h3 class="editable font-bold text-maroon text-sm mb-1" contenteditable="false">
+                <i class="fa-solid fa-brain mr-2"></i>Penyelesaian Konflik Berbasis Fakta
+              </h3>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+                Fokus pada penyelesaian masalah (problem-oriented), bukan menyerang personal atau karakter individu.
+              </p>
+            </div>
+          </div>
+
+          <div class="col-span-6 bg-beige/60 p-6 rounded-2xl border border-beige space-y-4">
+            <h3 class="editable font-bold text-maroon text-base border-b border-beige pb-2" contenteditable="false">
+              <i class="fa-solid fa-handshake-simple mr-2 text-maroon"></i>Studi Kasus Ringkas Konflik Tim
+            </h3>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm">
+              <span class="text-[10px] font-bold text-mutedred uppercase tracking-wider block mb-1">Dilema Lapangan</span>
+              <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+                Divisi Perlengkapan dan Divisi Acara berdebat mengenai tata letak panggung pameran IT.
+              </p>
+            </div>
+
+            <div class="bg-maroon text-cream p-4 rounded-xl shadow-sm">
+              <span class="text-[10px] font-bold text-beige uppercase tracking-wider block mb-1">Solusi Pemimpin Unggul</span>
+              <p class="editable text-xs text-cream/90 leading-relaxed" contenteditable="false">
+                Ketua mengumpulkan kedua koodinator, meninjau ulang denah ruang secara obyektif, dan mengambil keputusan berdasarkan kenyamanan pengunjung.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Konflik Yang Dikelola Dengan Baik Akan Memperkuat Kedewasaan Tim</span>
+          <span>Slide 12 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 13: MENYEIMBANGKAN KULIAH DAN ORGANISASI -->
+      <div class="slide" id="slide-13">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            12. Strategi Praktis: Kuliah &amp; Organisasi Seimbang
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Keseimbangan Aktivitas
+          </span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-5 flex-grow my-4 items-center">
+          <div class="bg-white p-5 rounded-2xl border border-beige shadow-sm space-y-2">
+            <div class="w-10 h-10 bg-cream rounded-lg flex items-center justify-center text-maroon font-bold text-base">1</div>
+            <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">Satu Kalender Terpadu</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+              Jangan pisahkan jadwal kuliah dan rapat organisasi. Satukan dalam Google Calendar untuk mendeteksi bentrok sejak dini.
+            </p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-beige shadow-sm space-y-2">
+            <div class="w-10 h-10 bg-cream rounded-lg flex items-center justify-center text-maroon font-bold text-base">2</div>
+            <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">Tentukan Prioritas Mingguan</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+              Setiap hari Minggu malam, tentukan 3 target terpenting minggu depan (misal: Selesai modul koding &amp; proposal sponsorship).
+            </p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-beige shadow-sm space-y-2">
+            <div class="w-10 h-10 bg-cream rounded-lg flex items-center justify-center text-maroon font-bold text-base">3</div>
+            <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">Cicil Tugas Bertahap</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+              Hindari menumpuk pembuatan makalah atau koding di malam sebelum deadline. Luangkan 45 menit setiap hari.
+            </p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-beige shadow-sm space-y-2">
+            <div class="w-10 h-10 bg-cream rounded-lg flex items-center justify-center text-maroon font-bold text-base">4</div>
+            <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">Komunikasi Awal Bila Bentrok</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+              Bila ada jadwal kuis bertepatan dengan rapat penting, beritahu ketua divisi secara jujur jauh-jauh hari.
+            </p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-beige shadow-sm space-y-2">
+            <div class="w-10 h-10 bg-cream rounded-lg flex items-center justify-center text-maroon font-bold text-base">5</div>
+            <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">Ukur Kapasitas Diri</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+              Untuk semester 1-2, batasi maksimal 1 organisasi/kepanitiaan agar bisa beradaptasi dengan ritme perkuliahan PTIK.
+            </p>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-beige shadow-sm space-y-2">
+            <div class="w-10 h-10 bg-cream rounded-lg flex items-center justify-center text-maroon font-bold text-base">6</div>
+            <h3 class="editable font-bold text-maroon text-sm" contenteditable="false">Jaga Kesehatan &amp; Tidur</h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+              Kinerja otak untuk logika koding butuh istirahat cukup (6-7 jam). Tanpa tidur cukup, semua jadwal akan berantakan.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Prestasi Akademik Dan Keaktifan Organisasi Bisa Berjalan Seiringan</span>
+          <span>Slide 13 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 14: STUDI KASUS 1 PRIORITAS -->
+      <div class="slide" id="slide-14">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            13. Studi Kasus 1: Pilih Prioritasmu
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Diskusi Interaktif #1
+          </span>
+        </div>
+
+        <div class="grid grid-cols-12 gap-8 items-center flex-grow my-4">
+          <div class="col-span-6 bg-maroon text-cream p-7 rounded-2xl shadow-md space-y-4">
+            <span class="text-xs font-bold text-beige uppercase tracking-wider bg-white/10 px-3 py-1 rounded-full">Skenario Realistis</span>
+            <h3 class="editable serif-font text-2xl font-bold text-cream leading-snug" contenteditable="false">
+              "Tugas Pemrograman vs. Rapat Organisasi Malam Ini"
+            </h3>
+            <p class="editable text-xs text-cream/90 leading-relaxed" contenteditable="false">
+              Seorang mahasiswa baru PTIK memiliki tugas pemrograman C++ yang wajib dikumpulkan besok pagi jam 08.00. Di sisi lain, malam ini pukul 19.30 ada rapat panitia penting untuk acara minggu depan di mana ia menjadi penanggung jawab perlengkapan. Tugas kodingnya belum selesai.
+            </p>
+            <div class="p-3 bg-black/20 rounded-xl text-xs text-beige border border-white/10">
+              <b>Pertanyaan:</b> Apa langkah terbaik yang harus diambil mahasiswa tersebut?
+            </div>
+          </div>
+
+          <div class="col-span-6 bg-white p-6 rounded-2xl border border-beige shadow-sm space-y-4">
+            <h3 class="editable font-bold text-maroon text-base border-b border-beige pb-2" contenteditable="false">
+              3 Langkah Solusi Tepat:
+            </h3>
+
+            <div class="space-y-3 text-xs">
+              <div class="p-3 bg-cream/50 rounded-xl border-l-4 border-maroon">
+                <span class="font-bold text-maroon block mb-0.5">Langkah 1: Identifikasi Utama</span>
+                <span class="editable text-darkbrown" contenteditable="false">Akademik adalah prioritas utama (Kuadran I). Koding harus diselesaikan agar nilai kuis selamat.</span>
+              </div>
+
+              <div class="p-3 bg-cream/50 rounded-xl border-l-4 border-mutedred">
+                <span class="font-bold text-maroon block mb-0.5">Langkah 2: Komunikasi Etis</span>
+                <span class="editable text-darkbrown" contenteditable="false">Izin resmi kepada ketua rapat sebelum jam 18.00. Jelaskan kendala dengan jujur dan titipkan berkas perlengkapan yang sudah siap.</span>
+              </div>
+
+              <div class="p-3 bg-cream/50 rounded-xl border-l-4 border-chocolate">
+                <span class="font-bold text-maroon block mb-0.5">Langkah 3: Tinjauan Ulang (Follow Up)</span>
+                <span class="editable text-darkbrown" contenteditable="false">Selesaikan koding malam itu. Setelah rapat selesai, minta notulen hasil rapat kepada rekan panitia.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Prioritas Yang Jelas Mencegah Rasa Bersalah Dan Kegagalan Tugas</span>
+          <span>Slide 14 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 15: STUDI KASUS 2 KONFLIK -->
+      <div class="slide" id="slide-15">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            14. Studi Kasus 2: Konflik Dalam Kepanitiaan
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Diskusi Interaktif #2
+          </span>
+        </div>
+
+        <div class="grid grid-cols-12 gap-8 items-center flex-grow my-4">
+          <div class="col-span-6 bg-beige/60 p-7 rounded-2xl border border-beige space-y-4">
+            <span class="text-xs font-bold text-maroon uppercase tracking-wider bg-beige px-3 py-1 rounded-full">Skenario Dinamika Tim</span>
+            <h3 class="editable serif-font text-2xl font-bold text-maroon leading-snug" contenteditable="false">
+              "Keterlambatan Desain Poster vs. Jadwal Pubdekdok"
+            </h3>
+            <p class="editable text-xs text-darkbrown leading-relaxed" contenteditable="false">
+              Divisi Publikasi terlambat menyerahkan desain poster acara. Divisi Acara merasa terhambat untuk promosi. Divisi Publikasi merasa tertekan karena stafnya terbatas dan juga dibebani tugas kuliah yang menumpuk. Terjadi aksi saling menyalahkan di grup WhatsApp.
+            </p>
+            <div class="p-3 bg-white rounded-xl text-xs text-chocolate border border-beige">
+              <b>Pertanyaan:</b> Bagaimana cara menyelesaikan masalah tanpa merusak hubungan tim?
+            </div>
+          </div>
+
+          <div class="col-span-6 bg-white p-6 rounded-2xl border border-beige shadow-sm space-y-3">
+            <h3 class="editable font-bold text-maroon text-base border-b border-beige pb-2" contenteditable="false">
+              Poin Solusi Ringkas:
+            </h3>
+
+            <div class="space-y-2 text-xs">
+              <div class="flex items-start space-x-2 p-2 bg-cream/40 rounded-lg">
+                <span class="w-5 h-5 rounded-full bg-maroon text-cream flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">1</span>
+                <span class="editable text-darkbrown" contenteditable="false"><b>Hentikan Debat di Grup:</b> Ajak koordinator kedua divisi ketemu langsung (atau Google Meet).</span>
+              </div>
+              <div class="flex items-start space-x-2 p-2 bg-cream/40 rounded-lg">
+                <span class="w-5 h-5 rounded-full bg-maroon text-cream flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">2</span>
+                <span class="editable text-darkbrown" contenteditable="false"><b>Evaluasi Pembagian Tugas:</b> Buka kendala divisi publikasi secara objektif.</span>
+              </div>
+              <div class="flex items-start space-x-2 p-2 bg-cream/40 rounded-lg">
+                <span class="w-5 h-5 rounded-full bg-maroon text-cream flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">3</span>
+                <span class="editable text-darkbrown" contenteditable="false"><b>Prioritaskan Aset Utama:</b> Buat poster utama versi minimalis dulu agar promosi jalan.</span>
+              </div>
+              <div class="flex items-start space-x-2 p-2 bg-cream/40 rounded-lg">
+                <span class="w-5 h-5 rounded-full bg-maroon text-cream flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">4</span>
+                <span class="editable text-darkbrown" contenteditable="false"><b>Bantuan Lintas Divisi:</b> Minta anggota divisi lain yang paham Canva/Figma untuk membantu.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Solusi Terbaik Selalu Lahir Dari Emposi Yang Stabil Dan Diskusi Dewasa</span>
+          <span>Slide 15 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 16: REFLEKSI DAN KESIMPULAN -->
+      <div class="slide" id="slide-16">
+        <div class="flex justify-between items-center border-b-2 border-beige pb-3">
+          <h2 class="editable text-2xl font-bold text-maroon" contenteditable="false">
+            15. Refleksi Diri &amp; Rangkuman Kunci
+          </h2>
+          <span class="editable text-xs font-semibold text-chocolate bg-beige px-3 py-1 rounded-full" contenteditable="false">
+            Summary
+          </span>
+        </div>
+
+        <div class="grid grid-cols-12 gap-6 items-center flex-grow my-4">
+          <!-- Refleksi Box -->
+          <div class="col-span-5 bg-white p-6 rounded-2xl border border-beige shadow-sm space-y-4">
+            <h3 class="editable font-bold text-maroon text-base border-b border-beige pb-2" contenteditable="false">
+              <i class="fa-solid fa-clipboard-question mr-2 text-mutedred"></i>3 Pertanyaan Refleksi Diri
+            </h3>
+
+            <div class="space-y-3 text-xs text-darkbrown">
+              <div class="p-3 bg-cream/60 rounded-xl">
+                <p class="editable font-semibold text-maroon mb-1" contenteditable="false">1. Tinjauan Prioritas</p>
+                <p class="editable" contenteditable="false">Apakah selama ini saya sudah mampu menentukan mana yang penting vs. sekadar mendesak?</p>
+              </div>
+
+              <div class="p-3 bg-cream/60 rounded-xl">
+                <p class="editable font-semibold text-maroon mb-1" contenteditable="false">2. Tanggung Jawab Komitmen</p>
+                <p class="editable" contenteditable="false">Apakah saya sudah bertanggung jawab penuh atas tugas kuliah &amp; amanah organisasi?</p>
+              </div>
+
+              <div class="p-3 bg-cream/60 rounded-xl">
+                <p class="editable font-semibold text-maroon mb-1" contenteditable="false">3. Rencana Perbaikan</p>
+                <p class="editable" contenteditable="false">Kebiasaan buruk apa (misal: prokrastinasi) yang ingin saya hilangkan mulai minggu ini?</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kesimpulan Box -->
+          <div class="col-span-7 bg-maroon text-cream p-6 rounded-2xl shadow-md space-y-4">
+            <h3 class="editable serif-font text-xl font-bold text-beige border-b border-white/20 pb-2" contenteditable="false">
+              5 Pesan Kunci Untuk Maba PTIK
+            </h3>
+
+            <div class="space-y-2.5 text-xs text-cream/90">
+              <div class="flex items-start space-x-2">
+                <i class="fa-solid fa-check text-beige mt-0.5"></i>
+                <p class="editable" contenteditable="false"><b>Waktu Perlu Dikelola:</b> Jangan biarkan hari Anda berjalan tanpa arah terencana.</p>
+              </div>
+              <div class="flex items-start space-x-2">
+                <i class="fa-solid fa-check text-beige mt-0.5"></i>
+                <p class="editable" contenteditable="false"><b>Tentukan Prioritas:</b> Kerjakan Kuadran II untuk pertumbuhan jangka panjang.</p>
+              </div>
+              <div class="flex items-start space-x-2">
+                <i class="fa-solid fa-check text-beige mt-0.5"></i>
+                <p class="editable" contenteditable="false"><b>Organisasi Tempat Belajar:</b> Jadikan organisasi sebagai kawah candradimuka soft skill.</p>
+              </div>
+              <div class="flex items-start space-x-2">
+                <i class="fa-solid fa-check text-beige mt-0.5"></i>
+                <p class="editable" contenteditable="false"><b>Komunikasi Kunci Sinergi:</b> Kejujuran dan kejelasan membangun reputasi baik.</p>
+              </div>
+              <div class="flex items-start space-x-2">
+                <i class="fa-solid fa-check text-beige mt-0.5"></i>
+                <p class="editable" contenteditable="false"><b>Jaga Keseimbangan:</b> IPK bagus, organisasi aktif, dan tubuh tetap sehat.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-chocolate font-medium border-t border-beige/60 pt-2">
+          <span>Perubahan Besar Dimulai Dari Langkah Kecil Yang Konsisten Saban Hari</span>
+          <span>Slide 16 / 17</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 17: CLOSING -->
+      <div class="slide !bg-maroon !p-14 text-cream text-center" id="slide-17">
+        <div class="flex justify-between items-center border-b border-cream/25 pb-4">
+          <span class="editable text-xs tracking-widest font-semibold uppercase text-beige" contenteditable="false">
+            PROGRAM STUDI PENDIDIKAN TEKNOLOGI INFORMASI &amp; KOMUNIKASI
+          </span>
+          <span class="editable text-xs font-medium text-cream bg-white/10 px-3 py-1 rounded-full" contenteditable="false">
+            Closing Session
+          </span>
+        </div>
+
+        <div class="flex flex-col items-center justify-center flex-grow my-6 max-w-3xl mx-auto space-y-6">
+          <i class="fa-solid fa-quote-left text-4xl text-beige/50"></i>
+          
+          <p class="editable serif-font text-3xl font-extrabold text-cream leading-relaxed italic" contenteditable="false">
+            "Jangan hanya sibuk menjalani kegiatan, tetapi pastikan setiap kegiatan membawa kita lebih dekat pada tujuan."
+          </p>
+
+          <div class="w-20 h-1 bg-mutedred rounded-full"></div>
+
+          <div>
+            <h1 class="editable serif-font text-5xl font-extrabold text-beige tracking-wider mb-2" contenteditable="false">
+              TERIMA KASIH
+            </h1>
+            <p class="editable text-sm text-cream/80" contenteditable="false">
+              Selamat Datang &amp; Selamat Bertumbuh Mahasiswa Baru PTIK!
+            </p>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-beige border-t border-cream/25 pt-4">
+          <span class="editable" contenteditable="false">PTIK Leadership &amp; Personal Development</span>
+          <span class="editable" contenteditable="false">Time &amp; Organizational Management</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FLOATING INTERACTIVE CONTROLS TOOLBAR -->
+  <div id="nav-toolbar" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-darkbrown/90 text-cream backdrop-blur-md px-6 py-3 rounded-full shadow-2xl flex items-center space-x-6 z-50 border border-white/10 text-sm no-print">
+    <!-- Prev Button -->
+    <button id="btn-prev" onclick="prevSlide()" class="hover:text-beige transition disabled:opacity-30 disabled:pointer-events-none flex items-center space-x-1">
+      <i class="fa-solid fa-chevron-left text-xs"></i>
+      <span class="hidden sm:inline">Prev</span>
+    </button>
+
+    <!-- Slide Indicator -->
+    <span id="slide-indicator" class="font-semibold text-beige text-xs tracking-wider min-w-[90px] text-center">
+      Slide 1 / 17
+    </span>
+
+    <!-- Next Button -->
+    <button id="btn-next" onclick="nextSlide()" class="hover:text-beige transition disabled:opacity-30 disabled:pointer-events-none flex items-center space-x-1">
+      <span class="hidden sm:inline">Next</span>
+      <i class="fa-solid fa-chevron-right text-xs"></i>
+    </button>
+
+    <div class="h-4 w-[1px] bg-white/20"></div>
+
+    <!-- Toggle Grid Index Modal -->
+    <button onclick="toggleGridModal()" title="Lihat Ringkasan Slide Grid" class="hover:text-beige transition flex items-center space-x-1">
+      <i class="fa-solid fa-table-cells-large"></i>
+      <span class="text-xs hidden md:inline">Grid</span>
+    </button>
+
+    <!-- Toggle Live Edit Mode -->
+    <button id="btn-edit-mode" onclick="toggleEditMode()" title="Aktifkan Mode Edit Teks Langsung" class="hover:text-beige transition flex items-center space-x-1">
+      <i class="fa-solid fa-pen-to-square"></i>
+      <span id="edit-mode-label" class="text-xs hidden md:inline">Edit Mode: Off</span>
+    </button>
+
+    <!-- Fullscreen Toggle -->
+    <button onclick="toggleFullscreen()" title="Layar Penuh" class="hover:text-beige transition">
+      <i class="fa-solid fa-expand"></i>
+    </button>
+
+    <!-- Print / PDF Export -->
+    <button onclick="window.print()" title="Cetak atau Export ke PDF" class="hover:text-beige transition">
+      <i class="fa-solid fa-print"></i>
+    </button>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div id="progress-bar-container" class="fixed top-0 left-0 w-full h-1.5 bg-black/30 z-50 no-print">
+    <div id="progress-bar" class="h-full bg-mutedred transition-all duration-300 w-[5.88%]"></div>
+  </div>
+
+  <!-- GRID PREVIEW MODAL -->
+  <div id="grid-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex flex-col justify-between p-8 hidden-modal no-print">
+    <div class="flex justify-between items-center text-cream mb-4 border-b border-white/20 pb-4">
+      <h2 class="serif-font text-2xl font-bold text-beige">
+        <i class="fa-solid fa-table-cells-large mr-2"></i>Indeks Slide Presentation PTIK
+      </h2>
+      <button onclick="toggleGridModal()" class="text-cream hover:text-beige text-2xl">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- 17 Slide Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 overflow-y-auto custom-scroll pr-2 my-auto max-h-[80vh]">
+      <!-- Generating 17 Grid Items in JS or HTML statically -->
+      <script>
+        const slideTitles = [
+          "Cover Slide", "Orientasi Maba", "Mengenal Time Management", "Mengapa Penting?",
+          "To-Do List & Time Blocking", "Pomodoro & Eisenhower", "Hambatan & Solusi", "Mengenal Organisasi",
+          "Manfaat Berorganisasi", "5 Unsur Organisasi", "Fungsi POAC", "Leadership & Konflik",
+          "Kuliah vs Organisasi", "Studi Kasus 1: Prioritas", "Studi Kasus 2: Konflik", "Refleksi & Kesimpulan",
+          "Closing Slide"
+        ];
+        document.write(slideTitles.map((title, i) => `
+          <button onclick="goToSlide(${i}); toggleGridModal();" class="bg-darkbrown/80 hover:bg-maroon border border-white/20 hover:border-beige text-left p-3 rounded-xl transition flex flex-col justify-between h-28 text-cream group">
+            <span class="text-[10px] font-bold text-beige bg-white/10 px-2 py-0.5 rounded w-max">Slide ${i+1}</span>
+            <span class="text-xs font-semibold group-hover:text-beige line-clamp-2">${title}</span>
+          </button>
+        `).join(''));
+      </script>
+    </div>
+
+    <div class="text-center text-xs text-beige/60 mt-4 border-t border-white/10 pt-3">
+      Klik pada slide mana saja untuk langsung menuju ke slide tersebut.
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION BANNER -->
+  <div id="toast-banner" class="fixed top-5 right-5 bg-maroon text-cream px-5 py-3 rounded-xl shadow-2xl border border-beige/40 flex items-center space-x-3 z-50 opacity-0 pointer-events-none translate-y-[-20px] no-print">
+    <i id="toast-icon" class="fa-solid fa-circle-info text-beige text-lg"></i>
+    <div>
+      <h4 id="toast-title" class="font-bold text-xs text-beige">Mode Edit Diaktifkan</h4>
+      <p id="toast-msg" class="text-[11px] text-cream/90">Klik teks apa saja pada slide untuk mengedit isi secara langsung.</p>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    let currentSlide = 0;
+    const totalSlides = 17;
+    let isEditMode = false;
+
+    // Scale presentation stage for responsive view
+    function autoScaleStage() {
+      const stage = document.getElementById('presentation-stage');
+      if (!stage) return;
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight - 70; // toolbar margin
+      const targetWidth = 1280;
+      const targetHeight = 720;
+
+      const scaleX = windowWidth / targetWidth;
+      const scaleY = windowHeight / targetHeight;
+      const scale = Math.min(scaleX, scaleY, 1.15); // cap max scale
+
+      stage.style.transform = `scale(${scale})`;
+    }
+
+    window.addEventListener('resize', autoScaleStage);
+    window.addEventListener('DOMContentLoaded', () => {
+      autoScaleStage();
+      updateSlideView();
+      loadSavedContent();
+    });
+
+    // Update Slide Display
+    function updateSlideView() {
+      document.querySelectorAll('.slide').forEach((slide, idx) => {
+        if (idx === currentSlide) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      // Update Toolbar Controls
+      document.getElementById('slide-indicator').innerText = `Slide ${currentSlide + 1} / ${totalSlides}`;
+      document.getElementById('btn-prev').disabled = currentSlide === 0;
+      document.getElementById('btn-next').disabled = currentSlide === totalSlides - 1;
+
+      // Progress Bar
+      const progressPercent = ((currentSlide + 1) / totalSlides) * 100;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlideView();
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateSlideView();
+      }
+    }
+
+    function goToSlide(index) {
+      if (index >= 0 && index < totalSlides) {
+        currentSlide = index;
+        updateSlideView();
+      }
+    }
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+      // Avoid hotkeys when editing text
+      if (document.activeElement && document.activeElement.getAttribute('contenteditable') === 'true') {
+        return;
+      }
+
+      if (e.key === 'ArrowRight' || e.key === 'Space' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goToSlide(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goToSlide(totalSlides - 1);
+      } else if (e.key === 'Escape') {
+        const gridModal = document.getElementById('grid-modal');
+        if (!gridModal.classList.contains('hidden-modal')) {
+          gridModal.classList.add('hidden-modal');
+        }
+      } else if (e.key === 'e' || e.key === 'E') {
+        toggleEditMode();
+      }
+    });
+
+    // Toggle Grid Modal
+    function toggleGridModal() {
+      const gridModal = document.getElementById('grid-modal');
+      gridModal.classList.toggle('hidden-modal');
+    }
+
+    // Live Edit Mode Toggle
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+      document.body.classList.toggle('edit-mode-active', isEditMode);
+      
+      const editLabel = document.getElementById('edit-mode-label');
+      editLabel.innerText = isEditMode ? 'Edit Mode: ON' : 'Edit Mode: Off';
+
+      const editables = document.querySelectorAll('.editable');
+      editables.forEach(el => {
+        el.setAttribute('contenteditable', isEditMode ? 'true' : 'false');
+        if (isEditMode) {
+          el.addEventListener('input', saveContentDebounced);
+        }
+      });
+
+      if (isEditMode) {
+        showToast("Mode Edit Aktif", "Klik langsung pada teks di slide untuk mengedit isinya.");
+      } else {
+        showToast("Mode Presentation", "Perubahan teks tersimpan otomatis di browser lokal.");
+      }
+    }
+
+    // Toast Notification Banner
+    function showToast(title, msg) {
+      const toast = document.getElementById('toast-banner');
+      document.getElementById('toast-title').innerText = title;
+      document.getElementById('toast-msg').innerText = msg;
+
+      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
+      }, 3500);
+    }
+
+    // Toggle Fullscreen
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          showToast("Fullscreen Error", err.message);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Save Content Edits to LocalStorage
+    let saveTimeout;
+    function saveContentDebounced() {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(() => {
+        const stageHTML = document.getElementById('presentation-stage').innerHTML;
+        localStorage.setItem('ptik_presentation_edits', stageHTML);
+      }, 500);
+    }
+
+    function loadSavedContent() {
+      const savedHTML = localStorage.getItem('ptik_presentation_edits');
+      if (savedHTML) {
+        document.getElementById('presentation-stage').innerHTML = savedHTML;
+        updateSlideView();
+      }
+    }
+  </script>
+</body>
+</html>
