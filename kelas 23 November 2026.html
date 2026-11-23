@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Latihan Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <style>
+    body {
+      background-color: #f2f2f2;
+      width: 1200px;
+      margin: auto;
+    }
+
+    .kepala {
+      padding: 10px;
+      background-color: #96e7ba;
+      text-align: center;
+      border-bottom: 2px solid #4d5246;
+    }
+
+    .menu {
+      background-color: #e6e6e6;
+      padding: 10px;
+      text-align: center;
+      margin-bottom: 20px;
+      border-bottom: 5px solid #4d5246;
+    }
+
+    .menu ul li {
+      display: inline;
+      margin-right: 10px;
+      padding: 5px;
+    }
+
+    .menu a {
+      text-decoration: none;
+      color: black;
+    }
+
+    .menu a:hover {
+      color: red;
+    }
+
+    .samping {
+      float: left;
+      width: 200px;
+      margin-right: 10px;
+      border-right: 5px solid #4d5246;
+      padding-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    .samping .profil {
+      width: 40%;
+      border-radius: 10%;
+      border-color: #4d5246;
+      border-style: solid;
+    }
+
+    .samping h3 {
+      margin-top: 0;
+    }
+
+    .tengah {
+      margin-left: 200px;
+      margin-bottom: 10px;
+    }
+
+    .kaki {
+      clear: both;
+      padding: 10px;
+      background-color: #96e7ba;
+      text-align: center;
+      margin-top: 10px;
+      border-top: 5px solid #4d5246;
+    }
+  </style>
+
+  <body>
+    <div class="kepala">
+      <h1>Profil Pribadi</h1>
+    </div>
+
+    <div class="menu">
+      <ul>
+        <li><a href="#">Beranda</a></li>
+        <li><a href="#profil">Profil</a></li>
+        <li><a href="#portofolio">Portofolio</a></li>
+        <li><a href="#kontak">Kontak</a></li>
+      </ul>
+    </div>
+
+    <div class="samping">
+      <h3>Tentang Saya</h3>
+      <img src="foto profil.jpeg" class="profil" />
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque nisi
+        in eaque culpa ratione? Magni repellat fugiat fugit nulla doloribus
+        dolorum ab deserunt quo exercitationem aperiam ad neque, sint quia.
+      </p>
+    </div>
+
+    <div class="tengah">
+      <h3>Konten</h3>
+      <h5 id="profil">Profil</h5>
+      <p>
+        Ini adalah konten profil saya. Saya adalah seorang mahasiswa yang suka
+        belajar hal baru.
+      </p>
+      <h5 id="portofolio">Portofolio</h5>
+      <p>
+        Berikut adalah beberapa proyek yang telah saya kerjakan. Saya berharap
+        dapat terus mengembangkan kemampuan saya di bidang ini.
+        <a href="https://github.com/wannptra" target="_blank">GitHub Profile</a>
+      </p>
+      <h5 id="kontak">Kontak</h5>
+      <p>
+        Jika Anda ingin menghubungi saya, silakan kirim email ke alamat berikut:
+        <a href="mailto:alwanp594@email.com">alwanp594@email.com</a>
+      </p>
+    </div>
+
+    <div class="kaki">
+      <p><b>Terima kasih telah mengunjungi</b></p>
+    </div>
+  </body>
+</html>
